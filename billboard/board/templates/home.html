@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+{% extends 'default.html' %}
+
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
 </head>
 <body>
+    {% block content %}
     <ul>
         {% for post in posts %}
         <li>
             <h2>{{post.title}}</h2>
-            <p>{{post.content|safe}}</p>
+            <p class="lead">{{post.content|safe}}</p>
+            <p class="mb-0">{{post.author.username}}</p>
         </li>
         {% endfor %}
     </ul>
+    {% endblock content %}
 </body>
 </html>
