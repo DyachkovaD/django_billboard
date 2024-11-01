@@ -1,0 +1,17 @@
+{% extends 'default.html' %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Авторизация</title>
+</head>
+<body>
+    {% block content %}
+    <p>Вам на почту был выслан код авторизации.</p> <br>
+    <p>Если он не пришел/был утерян, отправьте его повторно</p>
+    <form method="post" class="text-center my-5">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <p><button type="submit">Войти</button></p>
+    </form>
+    {% endblock content %}
+</body>

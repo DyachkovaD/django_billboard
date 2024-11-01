@@ -18,19 +18,29 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from board.views import *
+from board.views import PostsList
 
 from board.views import page_not_found
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', PostsList.as_view(), name='home'),
+    path('posts/', include('board.urls')),
+    # path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('summernote/', include('django_summernote.urls')),
+    path('account/', include('account.urls')),
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = page_not_found
 
-
-urlpatterns += [
-    path("ckeditor5/", include('django_ckeditor_5.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#
+# urlpatterns += [
+#     path("ckeditor5/", include('django_ckeditor_5.urls')),
+# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

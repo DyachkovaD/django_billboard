@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends 'default.html' %}
+
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+</head>
+<body>
+    {% block content %}
+    <h3>Мои объявления</h3>
+    <a class="navbar-brand" href="{% url 'post_create' %}"><h5>Создать объявление</h5></a>
+    <p></p>
+            {% if posts %}
+            {% for post in posts %}
+                <div>
+                    <a class="navbar-brand" href="{% url 'post_detail' post.id %}"><h3>{{post.title}}</h3></a>
+                    <p>{{post.author.username}}</p>
+                    <p>{{post.get_category_display}}</p>
+                    <p>{{post.date}}</p>
+                </div>
+                <section>
+                    {% if post.reply_set.all %}
+                        <h5>Отклики</h5>
+                        <ul>
+                        {% for reply in post.reply_set.all %}
+                            <li>
+                                <p>{{ reply.author.username }}</p>
+                                <p>{{ reply.text }}</p>
+                                <p>{{ reply.date }}</p>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </section>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <h2>Пока нет объявлений</h2>
+        {% endif %}
+    {% endblock content %}
+</body>
+</html>
