@@ -1,13 +1,15 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 from account.views import *
+from django.views.generic import TemplateView
 
 
 
 urlpatterns = [
     path('', IndexView.as_view(), name='account'),
-    path('login/', login_view, name='login'),
+    path('login/', LoginUser.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('register/', RegisterView.as_view(), name='register'),
-    path('onetimecode/', login_with_code_view, name='onetimecode'),
+    path('onetime_code/', onetime_code, name='onetime_code'),
+    path('code_error/', TemplateView.as_view(template_name='code_error.html'), name='code_error'),
 ]
