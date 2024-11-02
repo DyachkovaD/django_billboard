@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'board.apps.BoardConfig',
     'account.apps.AccountConfig',
     'django_summernote',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -148,8 +149,10 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 EMAIL_USE_SSL = True
+# EMAIL_FROM_NAME = "Форум"
 
 SERVER_EMAIL = DEFAULT_FROM_EMAIL  # это будет у нас вместо аргумента FROM в массовой рассылке
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

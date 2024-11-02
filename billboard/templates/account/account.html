@@ -9,36 +9,56 @@
 </head>
 <body>
     {% block content %}
-    <h3>Мои объявления</h3>
-    <a class="navbar-brand" href="{% url 'post_create' %}"><h5>Создать объявление</h5></a>
+    <a class="navbar-brand" href="{% url 'post_list' %}"><h5>Мои объявления</h5></a>
     <p></p>
-            {% if posts %}
-            {% for post in posts %}
-                <div>
-                    <a class="navbar-brand" href="{% url 'post_detail' post.id %}"><h3>{{post.title}}</h3></a>
-                    <p>{{post.author.username}}</p>
-                    <p>{{post.get_category_display}}</p>
-                    <p>{{post.date}}</p>
-                </div>
-                <section>
-                    {% if post.reply_set.all %}
-                        <h5>Отклики</h5>
-                        <ul>
-                        {% for reply in post.reply_set.all %}
-                            <li>
-                                <p>{{ reply.author.username }}</p>
-                                <p>{{ reply.text }}</p>
-                                <p>{{ reply.date }}</p>
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    {% endif %}
-                </section>
+    <section>
+        <h5>Отклики</h5>
+           <form action="" method="get">
+               {{ filterset.form.as_p }}
+               <input type="submit" value="Найти" />
+           </form>
+            {% if replies %}
+                <ul>
+                    {% for reply in replies %}
+                        <li>
+                            <p>Автор: {{ reply.author.username }}</p>
+                            <p>Пост: {{ reply.post }}</p>
+                            <p>{{ reply.text }}</p>
+                            <p>{{ reply.date|date:'d M Y' }}</p>
+                            <button> <a href="{% url 'reply_delete' pk=reply.id %}"> Удалить </a></button>
+                            {% if not reply.accepted %}
+                                <button> <a href="{% url 'reply_accept' pk=reply.id %}"> Принять </a></button>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
                 <hr>
-            {% endfor %}
-        {% else %}
-            <h2>Пока нет объявлений</h2>
-        {% endif %}
+            {% else %}
+            <p>Нет откликов</p>
+            {% endif %}
+    </section>
+
+    <div class="container">
+    {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+    </div>
     {% endblock content %}
 </body>
 </html>

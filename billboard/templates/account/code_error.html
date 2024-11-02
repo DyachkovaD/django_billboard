@@ -6,7 +6,7 @@
 </head>
 <body>
     {% block content %}
-    <h2>Неверный код</h2>
-    <button><a href="{% url 'onetime_code' %}">Ввести снова</a>></button>>
+    <div class="text-center"><h2>Неверный код</h2></div>
+    <button><a class="btn" href="{% url 'onetime_code' %}">Ввести снова</a></button>
     {% endblock content %}
 </body>

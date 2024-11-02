@@ -1,6 +1,6 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver  # импортируем нужный декоратор
-from django.core.mail import mail_managers, send_mail
+from django.core.mail import  send_mail
 from board.models import *
 from account.models import *
 from account.views import generate_string
@@ -26,13 +26,14 @@ def new_user_code(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=Reply, )
-def notify_author_new_reply(sender, instance, **kwargs):
-    subject = f'Новый отклик к вашему объявлению!'
+def notify_author_new_reply(sender, instance, created, **kwargs):
+    if created:
+        subject = f'Новый отклик к вашему объявлению!'
 
-    message = f'К вашему объявлению {instance.post}: новый отклик!'
-    send_mail(
-        subject,
-        message,
-        settings.DEFAULT_FROM_EMAIL,
-        [instance.post__author.email],
-    )
+        message = f'К вашему объявлению "{instance.post}": новый отклик!'
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [instance.post.author.email],
+        )

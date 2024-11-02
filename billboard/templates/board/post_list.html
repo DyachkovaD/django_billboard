@@ -1,0 +1,20 @@
+{% extends 'default.html' %}
+<head>
+    <meta charset="UTF-8">
+    <title>Мои объявления</title>
+</head>
+<body>
+    {% block content %}
+        <h3>Мои объявления</h3>
+    <a class="navbar-brand" href="{% url 'post_create' %}"><h5>Создать объявление</h5></a>
+    <p></p>
+            {% if posts %}
+            {% for post in posts %}
+                <div>
+                    <a class="navbar-brand" href="{% url 'post_detail' post.id %}"><h3>{{post.title}}</h3></a>
+                    <p>{{post.author.username}}</p>
+                    <p>{{post.get_category_display}}</p>
+                    <p>{{post.date}}</p>
+                </div>
+    {% endblock content %}
+</body>

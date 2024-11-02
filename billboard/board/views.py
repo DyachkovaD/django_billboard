@@ -2,13 +2,56 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-
+from django.core.mail import send_mail
+from django.conf import settings
 from board.forms import *
-
-# Create your views here.
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
-from board.models import Post
+from board.models import *
+from board.filters import ReplyFilter
+
+
+class ReplyList(LoginRequiredMixin, ListView):
+    model = Reply
+    ordering = '-date'
+    context_object_name = 'replies'
+    paginate_by = 10
+    template_name = 'account/account.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = Reply.objects.filter(post__author=self.request.user)
+        self.filterset = ReplyFilter(self.request.GET, queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавляем в контекст объект фильтрации.
+        context['filterset'] = self.filterset
+        return context
+
+
+def reply_delete(request, pk):
+    reply = Reply.objects.get(id=pk)
+    reply.delete()
+    return redirect('account')
+
+
+def reply_accept(request, pk):
+    reply = Reply.objects.get(id=pk)
+    reply.accepted = True
+    reply.save()
+
+    message = f"Ваше предложение '{reply}' на пост '{reply.post}' приняли! \n" \
+              f"Связаться с автором Вы можете по почте: {reply.post.author.email}"
+
+    send_mail(
+        f'Ваше предложение приняли!',
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [reply.author.email],
+    )
+    return redirect('account')
 
 
 class PostsList(ListView):
@@ -17,6 +60,18 @@ class PostsList(ListView):
     context_object_name = 'posts'
     paginate_by = 10
     template_name = 'board/home.html'
+
+
+class AccountPostsList(ListView):
+    model = Post
+    ordering = '-date'
+    context_object_name = 'posts'
+    paginate_by = 10
+    template_name = 'board/home.html'
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(author=self.request.user)
+        return queryset
 
 
 class PostDetail(DetailView):

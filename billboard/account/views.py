@@ -9,7 +9,9 @@ from django.views.generic import TemplateView, CreateView
 
 from account.forms import *
 from account.models import OneTimeCode
-from board.models import Post
+from board.models import Reply
+from board.views import ReplyList
+
 
 
 def generate_string(length):
@@ -21,10 +23,10 @@ def generate_string(length):
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'account/account.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["posts"] = Post.objects.filter(author=self.request.user).order_by('-date')
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context["posts"] = Post.objects.filter(author=self.request.user).order_by('-date')
+    #     return context
 
 
 class RegisterView(CreateView):
@@ -59,16 +61,3 @@ def onetime_code(request):
             return redirect('code_error')
 
     return render(request, 'account/onetime_code.html')
-
-
-# class LoginUser(LoginView):
-#     form_class = LoginUserForm
-#     template_name = 'account/login.html'
-#     extra_context = {'title': 'Авторизация'}
-
-
-# class RegisterView(CreateView):
-#     form_class = RegisterUserForm
-#     template_name = 'account/register.html'
-#     extra_context = {'title': 'Регистрация'}
-#     success_url = 'account/register'
