@@ -1,16 +1,18 @@
 import django_filters
 from django import forms
-from django_filters import FilterSet
+from django_filters import FilterSet, MultipleChoiceFilter
 from .models import Reply
 
+
 class ReplyFilter(FilterSet):
+
     text = django_filters.CharFilter(
         field_name='text',
         label='Текст',
         lookup_expr='iregex'
     )
     post = django_filters.CharFilter(
-        field_name='post__title',
+        field_name='post',
         label='Пост',
         lookup_expr='iregex'
     )

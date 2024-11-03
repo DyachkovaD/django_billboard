@@ -33,6 +33,7 @@ class Reply(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    accepted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.text
