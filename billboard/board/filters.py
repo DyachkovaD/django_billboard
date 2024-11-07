@@ -1,28 +1,19 @@
-import django_filters
 from django import forms
-from django_filters import FilterSet, MultipleChoiceFilter
-from .models import Reply
+from django_filters import FilterSet, ModelChoiceFilter
+from .models import Reply, Post
 
 
 class ReplyFilter(FilterSet):
-
-    text = django_filters.CharFilter(
-        field_name='text',
-        label='Текст',
-        lookup_expr='iregex'
-    )
-    post = django_filters.CharFilter(
-        field_name='post',
-        label='Пост',
-        lookup_expr='iregex'
-    )
-    date = django_filters.DateFilter(
-        field_name='date',
-        label='Дата отклика',
-        lookup_expr='lt',
-        widget=forms.DateInput(attrs={'type': 'date'})
+    post__title = ModelChoiceFilter(
+        label='Название объявления',
+        queryset=None,
+        widget=forms.Select,
+        empty_label='Все отклики'
     )
 
-    class Meta:
-        model = Reply
-        fields = ('text', 'post', 'date')
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.filters['post__title'].queryset = Post.objects.filter(author=user)
+        if not self.data.get('post__title'):
+            self.queryset = Reply.objects.filter(post__author=user)

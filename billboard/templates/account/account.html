@@ -11,16 +11,14 @@
     {% block content %}
     <a class="navbar-brand" href="{% url 'post_list' %}"><h5>Мои объявления</h5></a>
     <p></p>
-    <section>
+    <section class="text-center my-5">
         <h5>Отклики</h5>
            <form action="" method="get">
                {{ filterset.form.as_p }}
                <input type="submit" value="Найти" />
            </form>
             {% if replies %}
-                <ul>
                     {% for reply in replies %}
-                        <li>
                             <p>Автор: {{ reply.author.username }}</p>
                             <p>Пост: {{ reply.post }}</p>
                             <p>{{ reply.text }}</p>
@@ -29,36 +27,37 @@
                             {% if not reply.accepted %}
                                 <button> <a href="{% url 'reply_accept' pk=reply.id %}"> Принять </a></button>
                             {% endif %}
-                        </li>
+                            <hr>
                     {% endfor %}
-                </ul>
                 <hr>
             {% else %}
-            <p>Нет откликов</p>
+            <div class="text-center my-5">Нет откликов</div>
             {% endif %}
     </section>
 
-    <div class="container">
-    {% if page_obj.has_previous %}
-       <a href="?page=1">1</a>
-        {% if page_obj.previous_page_number != 1 %}
-           ...
-           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+    <div class="text-center">
+        <div class="container">
+        {% if page_obj.has_previous %}
+           <a href="?page=1">1</a>
+            {% if page_obj.previous_page_number != 1 %}
+               ...
+               <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+           {% endif %}
        {% endif %}
-   {% endif %}
 
-   {# Информация о текущей странице #}
-   {{ page_obj.number }}
+       {# Информация о текущей странице #}
+       {{ page_obj.number }}
 
-   {# Информация о следующих страницах #}
-   {% if page_obj.has_next %}
-       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
-       {% if paginator.num_pages != page_obj.next_page_number %}
-           ...
-           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {# Информация о следующих страницах #}
+       {% if page_obj.has_next %}
+           <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+           {% if paginator.num_pages != page_obj.next_page_number %}
+               ...
+               <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+           {% endif %}
        {% endif %}
-   {% endif %}
+        </div>
+        {% endblock content %}
     </div>
-    {% endblock content %}
 </body>
 </html>
